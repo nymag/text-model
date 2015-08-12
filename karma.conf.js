@@ -1,5 +1,4 @@
-var files, settings,
-  _ = require('lodash');
+var files, settings;
 
 files = [
   'test.js'
@@ -9,32 +8,25 @@ settings = {
   autoWatch: false,
   colors: true,
   singleRun: true,
-  transports: ['websocket'],
   browserify: {
-    debug: true,
-    transform: ['es6ify']
+    debug: true
   },
   reporters: ['dots'],
   files: files,
   frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
   preprocessors: {
-    'index.js': ['browserify']
+    'test.js': ['browserify']
   },
   plugins: [
     'karma-browserify',
     'karma-chai',
     'karma-chrome-launcher',
-    'karma-firefox-launcher',
     'karma-mocha',
     'karma-sinon'
-  ]
+  ],
+  browsers: ['Chrome']
 };
 
 module.exports = function (karma) {
-  karma.set(_.assign(settings, {
-    browsers: ['Chrome', 'Firefox']
-  }));
+  karma.set(settings);
 };
-
-module.exports.files = files;
-module.exports.settings = settings;
