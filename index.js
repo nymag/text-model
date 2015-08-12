@@ -195,8 +195,9 @@ tagTypes = {
  * Inversion of tagTypes, referenced by the tag name.
  *
  * Used to construct elements from models.
- *
- * @enum
+ * @param {object} obj
+ * @param {object} tag
+ * @param {string} name
  */
 blockTypes = _.transform(tagTypes, function (obj, tag, name) {
   obj[tag.name] = { set: tag.set, name: name };
