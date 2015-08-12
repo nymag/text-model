@@ -1,0 +1,27 @@
+{
+  "name": "text-model",
+  "version": "0.0.1",
+  "description": "A representational text model",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoshokatana/text-model.git"
+  },
+  "keywords": [
+    "text",
+    "model",
+    "representational",
+    "formatting",
+    "rich",
+    "text"
+  ],
+  "author": "New York Media",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yoshokatana/text-model/issues"
+  },
+  "homepage": "https://github.com/yoshokatana/text-model#readme"
+}
