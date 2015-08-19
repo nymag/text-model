@@ -1,4 +1,6 @@
-var files, settings;
+var files, settings,
+  istanbul = require('browserify-istanbul'),
+  _ = require('lodash');
 
 files = [
   'test.js'
@@ -9,9 +11,24 @@ settings = {
   colors: true,
   singleRun: true,
   browserify: {
-    debug: true
+    debug: true,
+    transform: [istanbul({
+      ignore: ['**/node_modules/**'],
+      defaultIgnore: true
+    })]
   },
-  reporters: ['dots'],
+  coverageReporter: {
+    type: 'lcov',
+    dir: 'coverage/',
+    includeAllSources: true,
+    watermarks: {
+      statements: [95, 100],
+      functions: [95, 100],
+      branches: [95, 100],
+      lines: [95, 100]
+    }
+  },
+  reporters: ['dots', 'coverage'],
   files: files,
   frameworks: ['mocha', 'chai', 'sinon', 'browserify'],
   preprocessors: {
@@ -21,6 +38,7 @@ settings = {
     'karma-browserify',
     'karma-chai',
     'karma-chrome-launcher',
+    'karma-coverage',
     'karma-mocha',
     'karma-sinon'
   ],

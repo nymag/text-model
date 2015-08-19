@@ -31,17 +31,19 @@
     "lodash": "^3.10"
   },
   "devDependencies": {
+    "browserify-istanbul": "^0.2.1",
     "chai": "^3.2.0",
+    "coveralls": "^2.11.4",
     "eslint": "^1.1.0",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
     "karma-browserify": "^4.3.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.0",
     "karma-mocha": "^0.2.0",
     "karma-sinon": "^1.0.4",
     "mocha": "^2.2.5",
-    "phantomjs": "^1.9.18",
     "sinon": "^1.15.4"
   }
 }
