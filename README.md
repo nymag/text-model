@@ -22,7 +22,7 @@ becomes
 ## Usage
 
 ```
-npm install --save @nymdev/text-model
+npm install --save text-model
 ```
 
 Convert from an Element to a text model representation.
