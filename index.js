@@ -671,7 +671,23 @@ function concat(before, after) {
   return model;
 }
 
+/**
+ * @param {object} config
+ */
+function setSameAs(config) {
+  sameAs = _.transform(config, function (obj, value, key) {
+    value = value.toUpperCase();
+
+    if (tagTypes[value]) {
+      obj[key.toUpperCase()] = value.toUpperCase();
+    } else {
+      throw new Error('No definition for ' + value);
+    }
+  }, {});
+}
+
 module.exports.fromElement = fromElement;
 module.exports.toElement = toElement;
 module.exports.split = split;
 module.exports.concat = concat;
+module.exports.setSameAs = setSameAs;
