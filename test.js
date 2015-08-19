@@ -383,4 +383,20 @@ describe('model-text service', function () {
       expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
     });
   });
+
+  describe('setSameAs', function () {
+    var fn = lib[this.title];
+
+    it('allows known tags', function () {
+      expect(function () {
+        fn({h1: 'h2'});
+      }).to.not.throw();
+    });
+
+    it('throws on unknown tags', function () {
+      expect(function () {
+        fn({article: 'section'});
+      }).to.throw();
+    });
+  })
 });
