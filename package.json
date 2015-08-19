@@ -1,6 +1,6 @@
 {
   "name": "text-model",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A representational text model",
   "main": "index.js",
   "scripts": {
