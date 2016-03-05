@@ -34,7 +34,7 @@
     "browserify-istanbul": "^0.2.1",
     "chai": "^3.2.0",
     "coveralls": "^2.11.4",
-    "eslint": "^1.1.0",
+    "eslint": "^2.3.0",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
     "karma-browserify": "^4.3.0",
