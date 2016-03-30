@@ -1,6 +1,6 @@
+'use strict';
 var files, settings,
-  istanbul = require('browserify-istanbul'),
-  _ = require('lodash');
+  istanbul = require('browserify-istanbul');
 
 files = [
   'test.js'
