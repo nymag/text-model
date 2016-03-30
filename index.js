@@ -1,3 +1,4 @@
+'use strict';
 var tagTypes, blockTypes, sameAs,
   _ = require('lodash'),
   domify = require('domify'),
@@ -28,7 +29,7 @@ function contentTextOnly(node) {
 function knownTagsOnly(node) {
   var name = node.nodeName;
 
-  return !!tagTypes[name] || (node.nodeType === Node.TEXT_NODE && contentTextOnly(node));
+  return !!tagTypes[name] || node.nodeType === Node.TEXT_NODE && contentTextOnly(node);
 }
 
 /**
@@ -138,14 +139,24 @@ function propertied(model, node) {
 }
 
 /**
- * Singled tags can only ever exist once at a particular position in a paragraph (<br><br> becomes <br>), and
- * they never have any content or properties.
+ * Singled tags exist at a particular position in a paragraph (rather than spanning text),
+ * and they never have any content or properties.
  *
- * They can probably be represented as an array like [1, 2, 3] that becomes "a<br>b<br>c<br>" on the text "abc", since
- * doubles can be removed by just checking for uniqueness and then sorting.
+ * @param {{text: string, blocks: object}} model
+ * @param {Node} node
  */
-function singled() {
-  // implemented later
+function singled(model, node) {
+  var pos = model.text.length,
+    nodeName = getNodeName(node),
+    tagBlockName = tagTypes[nodeName].name,
+    block = model.blocks[tagBlockName];
+
+  if (!block) {
+    block = [];
+    model.blocks[tagBlockName] = block;
+  }
+
+  block.push(pos);
 }
 
 /**
@@ -195,9 +206,8 @@ tagTypes = {
  * Inversion of tagTypes, referenced by the tag name.
  *
  * Used to construct elements from models.
- * @param {object} obj
- * @param {object} tag
- * @param {string} name
+ *
+ * @enum
  */
 blockTypes = _.transform(tagTypes, function (obj, tag, name) {
   obj[tag.name] = { set: tag.set, name: name };
@@ -211,15 +221,15 @@ blockTypes = _.transform(tagTypes, function (obj, tag, name) {
  * @enum
  */
 sameAs = {
-  'B': 'STRONG',
-  'U': 'EM',
-  'I': 'EM',
-  'H1': 'H2',
-  'H3': 'H2',
-  'H4': 'H2',
-  'H5': 'H2',
-  'H6': 'H2',
-  'STRIKE': 'DEL'
+  B: 'STRONG',
+  U: 'EM',
+  I: 'EM',
+  H1: 'H2',
+  H3: 'H2',
+  H4: 'H2',
+  H5: 'H2',
+  H6: 'H2',
+  STRIKE: 'DEL'
 };
 
 /**
@@ -317,7 +327,7 @@ function getBinarySortedInsertPosition(list, value) {
  */
 function getOverlapCount(blockA) {
   var i, j, insertA, insertB, blockB,
-    otherBlocks = _.rest(arguments),
+    otherBlocks = _.tail(arguments),
     count = 0;
 
   for (i = 0; i < otherBlocks.length; i++) {
@@ -382,6 +392,43 @@ function splitTextNode(blockType, rootEl, blockAttributes, item) {
 }
 
 /**
+ * Add singled blocks to el
+ * note: singled blocks have no attributes
+ *
+ * @param {object} blockType
+ * @param {Node} rootEl
+ * @param {object} item
+ */
+function addSingledBlocks(blockType, rootEl, item) {
+  var startTextNode, blockEl, tagName,
+    textNode = item.node,
+    parentNode = textNode.parentNode || rootEl, // no parent means el is a document/document fragment
+    text = textNode.nodeValue,
+    pos = item.start,
+    startText = text.substr(0, pos),
+    endText = text.substr(pos);
+
+  // create block element
+  tagName = blockTypes[blockType].name;
+  blockEl = document.createElement(tagName);
+  // add block element
+  parentNode.insertBefore(blockEl, textNode);
+
+  // before the element
+  if (startText.length > 0) {
+    startTextNode = domify(startText);
+    parentNode.insertBefore(startTextNode, blockEl);
+  }
+
+  // after the element
+  if (endText.length > 0) {
+    textNode.nodeValue = endText;
+  } else {
+    parentNode.removeChild(textNode);
+  }
+}
+
+/**
  * @param {Node} el
  * @param {number} start
  * @param {number} end
@@ -421,7 +468,7 @@ function getTextNodeTargets(el, start, end) {
  * @returns {object}
  */
 function getBlocksOfType(blocks, type) {
-  return _.pick(blocks, function (block, blockName) {
+  return _.pickBy(blocks, function (block, blockName) {
     return blockTypes[blockName].set === type;
   });
 }
@@ -463,9 +510,9 @@ function sortContinuousBlocks(blocks) {
     backwardCount = getOverlapCount(blocks[keys[1]], blocks[keys[0]]);
 
     if (forwardCount > backwardCount) {
-      sortedBlocks = _.pairs(blocks);
+      sortedBlocks = _.toPairs(blocks);
       sortedBlocks.reverse();
-      blocks = _.zipObject(sortedBlocks);
+      blocks = _.fromPairs(sortedBlocks);
     }
   }
 
@@ -496,6 +543,25 @@ function addContinuousBlocksToElement(el, model) {
 }
 
 /**
+ * @param {Node} el
+ * @param {{text: string, blocks: object}} model
+ */
+function addSingledBlocksToElement(el, model) {
+  var singledBlocks = getBlocksOfType(model.blocks, singled);
+
+  _.forOwn(singledBlocks, function (blocksOfType, blockType) {
+    var i, list, pos;
+
+    for (i = 0; i < blocksOfType.length; i++) {
+      pos = blocksOfType[i];
+      list = getTextNodeTargets(el, pos, pos); // same position
+
+      _.each(list, addSingledBlocks.bind(null, blockType, el));
+    }
+  });
+}
+
+/**
  * @param {{text: string, blocks: object}} model
  * @returns {DocumentFragment}
  */
@@ -504,6 +570,7 @@ function toElement(model) {
 
   addPropertiedBlocksToElement(el, model);
   addContinuousBlocksToElement(el, model);
+  addSingledBlocksToElement(el, model);
 
   return el;
 }
@@ -581,6 +648,38 @@ function splitContinuousBlocks(model, before, after, num) {
 }
 
 /**
+ * These cannot be split, so ones that fall on the border are removed.
+ *
+ * @param {{text: string, blocks: object}} model
+ * @param {{text: string, blocks: object}} before
+ * @param {{text: string, blocks: object}} after
+ * @param {number} num
+ */
+function splitSingledBlocks(model, before, after, num) {
+  _.each(getBlocksOfType(model.blocks, singled), function (blocks, blockType) {
+    var newPos,
+      beforeBlocks = [],
+      afterBlocks = [];
+
+    _.each(blocks, function (pos) {
+      if (pos < num) {
+        beforeBlocks.push(pos);
+      } else if (pos > num) {
+        newPos = pos - num;
+        afterBlocks.push(newPos);
+      }
+    });
+
+    if (beforeBlocks.length > 0) {
+      before.blocks[blockType] = beforeBlocks;
+    }
+    if (afterBlocks.length > 0) {
+      after.blocks[blockType] = afterBlocks;
+    }
+  });
+}
+
+/**
  * @param {{text: string, blocks: object}} model
  * @param {number} num
  * @returns {[object, object]}
@@ -597,6 +696,7 @@ function split(model, num) {
 
   splitPropertiedBlocks(model, before, after, num);
   splitContinuousBlocks(model, before, after, num);
+  splitSingledBlocks(model, before, after, num);
 
   return [before, after];
 }
@@ -655,6 +755,30 @@ function concatContinuousBlocks(before, after, model) {
 }
 
 /**
+ * @param {{text: string, blocks: object}} before
+ * @param {{text: string, blocks: object}} after
+ * @param {{text: string, blocks: object}} model
+ */
+function concatSingledBlocks(before, after, model) {
+  var num = before.text.length,
+    mergedBlocks = _.mapValues(_.cloneDeep(getBlocksOfType(after.blocks, singled)), function (blocks) {
+      return _.map(blocks, function (block) {
+        return block + num;
+      });
+    });
+
+  _.each(_.cloneDeep(getBlocksOfType(before.blocks, singled)), function (blocks, blockType) {
+    if (mergedBlocks[blockType]) {
+      mergedBlocks[blockType] = blocks.concat(mergedBlocks[blockType]);
+    } else {
+      mergedBlocks[blockType] = blocks;
+    }
+  });
+
+  _.assign(model.blocks, mergedBlocks);
+}
+
+/**
  * @param {object} before
  * @param {object} after
  * @returns {{text: string, blocks: object}}
@@ -667,27 +791,12 @@ function concat(before, after) {
 
   concatPropertiedBlocks(before, after, model);
   concatContinuousBlocks(before, after, model);
+  concatSingledBlocks(before, after, model);
 
   return model;
-}
-
-/**
- * @param {object} config
- */
-function setSameAs(config) {
-  sameAs = _.transform(config, function (obj, value, key) {
-    value = value.toUpperCase();
-
-    if (tagTypes[value]) {
-      obj[key.toUpperCase()] = value.toUpperCase();
-    } else {
-      throw new Error('No definition for ' + value);
-    }
-  }, {});
 }
 
 module.exports.fromElement = fromElement;
 module.exports.toElement = toElement;
 module.exports.split = split;
 module.exports.concat = concat;
-module.exports.setSameAs = setSameAs;
