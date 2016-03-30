@@ -10,8 +10,9 @@
     "chai": false,
     "sinon": false
   },
-  // enable the es6 features supported by browsers / iojs
+  // enable the es6 features supported by our browsers / iojs
   "ecmaFeatures": {
+    "arrowFunctions": true,
     "blockBindings": true,
     "forOf": true,
     "objectLiteralDuplicateProperties": true,
@@ -24,7 +25,7 @@
   },
   "rules": {
     // possible errors
-    "no-extra-parens": [1,"functions"],
+    "no-extra-parens": 1,
     "valid-jsdoc": [1, {
       "requireReturn": false,
       "requireParamDescription": false,
@@ -39,10 +40,11 @@
     "no-self-compare": 2,
     "no-throw-literal": 2,
     "no-void": 2,
+    "quote-props": [2, "as-needed"],
     "vars-on-top": 2,
     "wrap-iife": 2,
     // strict mode
-    "strict": [2, "never"],
+    "strict": [2, "global"],
     // variables
     "no-unused-vars": 2,
     // node.js
@@ -64,7 +66,7 @@
     "one-var": 2,
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
-    "space-after-keywords": [2, "always"],
+    "keyword-spacing": 2,
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [2, {"anonymous": "always", "named": "never"}],
     "space-infix-ops": [1, {"int32Hint": false}],
