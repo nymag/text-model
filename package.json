@@ -37,7 +37,7 @@
     "eslint": "^2.5.3",
     "istanbul": "^0.4.2",
     "jasmine-core": "^2.3.4",
-    "karma": "^0.13.9",
+    "karma": "^1.0.0",
     "karma-browserify": "^5.0.3",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.0",
