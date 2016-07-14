@@ -33,6 +33,16 @@ describe('text-model', function () {
   describe('fromElement', function () {
     var fn = lib[this.title];
 
+    it('doesn\t decode sanitized html', function () {
+      var el = domify('Hello &lt;iframe&gt;'),
+        result = {
+          text: 'Hello &lt;iframe&gt;',
+          blocks: {}
+        };
+
+      expect(fn(el)).to.deep.equal(result);
+    });
+
     it('finds text', function () {
       var el = domify('Hello <strong>there <em>person</em></strong>!'),
         result = {
@@ -198,6 +208,16 @@ describe('text-model', function () {
 
   describe('toElement', function () {
     var fn = lib[this.title];
+
+    it('doesn\t decode sanitized html', function () {
+      var model = {
+          text: '&lt;Hello there person!&gt;',
+          blocks: {}
+        },
+        result = '<Hello there person>!';
+
+      expect(documentToString(fn(model))).to.not.equal(result);
+    });
 
     it('converts continuous blocks', function () {
       var model = {
