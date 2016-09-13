@@ -28,7 +28,7 @@ function contentTextOnly(node) {
 function knownTagsOnly(node) {
   var name = node.nodeName;
 
-  return !!tagTypes[name] || node.nodeType === Node.TEXT_NODE && contentTextOnly(node);
+  return !!tagTypes[name] || !!sameAs[name] || node.nodeType === Node.TEXT_NODE && contentTextOnly(node);
 }
 
 /**
@@ -799,3 +799,11 @@ module.exports.fromElement = fromElement;
 module.exports.toElement = toElement;
 module.exports.split = split;
 module.exports.concat = concat;
+
+/**
+ * merge custom conversion table
+ * @param {object} obj tagname mappings
+ */
+module.exports.setSameAs = function (obj) {
+  sameAs = _.assign(sameAs, obj);
+};
