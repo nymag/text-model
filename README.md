@@ -3,7 +3,7 @@ Text Model
 
 Transform functionality to move between HTML Elements and a text model.
 
-[![Coverage Status](https://coveralls.io/repos/nymag/text-model/badge.svg?branch=master&service=github)](https://coveralls.io/github/nymag/text-model?branch=master)
+[![CircleCI](https://circleci.com/gh/nymag/text-model.svg?style=svg)](https://circleci.com/gh/nymag/text-model) [![Coverage Status](https://coveralls.io/repos/nymag/text-model/badge.svg?branch=master&service=github)](https://coveralls.io/github/nymag/text-model?branch=master)
 
 ```html
 Hello <a href="place" alt="hey">there</a> <u>person</u>!
