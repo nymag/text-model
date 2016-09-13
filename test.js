@@ -597,4 +597,31 @@ describe('text-model', function () {
       expect(lib.fromElement(el)).to.deep.equal(result);
     });
   });
+
+  describe('resetSameAs', function () {
+    var fn = lib[this.title];
+
+    it('resets the default conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h3>e</h3><h4>f</h4><h5>g</h5><h6>h</h6><strike>i</strike>'),
+        result = {
+          text: 'abcdefghi',
+          blocks: {
+            strong: [0, 1],
+            emphasis: [1, 3],
+            h2: [3, 8],
+            del: [8, 9]
+          }
+        };
+
+      // set conversions to some weird state
+      lib.updateSameAs({
+        B: null,
+        U: null,
+        I: null
+      });
+      fn(); // reset them
+
+      expect(lib.fromElement(el)).to.deep.equal(result); // default conversions
+    });
+  });
 });
