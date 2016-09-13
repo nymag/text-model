@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   lib = require('./index'),
   domify = require('domify');

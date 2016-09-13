@@ -1,4 +1,3 @@
-'use strict';
 var tagTypes, blockTypes, defaultSameAs, sameAs,
   _ = require('lodash'),
   domify = require('domify'),
