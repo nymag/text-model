@@ -802,6 +802,7 @@ module.exports.concat = concat;
 
 /**
  * merge custom conversion table
+ * note: to remove a default conversion, simply pass <TAGNAME>: null
  * @param {object} obj tagname mappings
  */
 module.exports.setSameAs = function (obj) {

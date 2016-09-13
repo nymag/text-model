@@ -74,7 +74,21 @@ textModel.setSameAs({
 });
 ```
 
-These tags will be converted if they are seen.  The defaults are as above.
+These tags will be converted if they are seen. The defaults are as above, but you can pass in an object of tag names (uppercase) that will merge and overwrite them. To _remove_ a default conversion, simply pass `<tagname>: null` in the object:
+
+```js
+textModel.setSameAs({
+  'B': null, // override default, don't convert <b> to <strong>
+  'H1': 'STRONG', // convert ALL headers to <strong>
+  'H2': 'STRONG',
+  'H3': 'STRONG',
+  'H4': 'STRONG',
+  'H5': 'STRONG',
+  'H6': 'STRONG',
+  'SPAN': 'EM', // convert all spans to <em>
+  'STRIKE': null // don't convert <strike>. this will remove the tag as <strike> is deprecated in html (and thus removed by text-model)
+});
+```
 
 ## Testing
 

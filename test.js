@@ -571,6 +571,6 @@ describe('text-model', function () {
       });
 
       expect(lib.fromElement(el)).to.deep.equal(result);
-    })
+    });
   });
 });
