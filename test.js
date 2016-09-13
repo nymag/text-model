@@ -1,4 +1,3 @@
-'use strict';
 var _ = require('lodash'),
   lib = require('./index'),
   domify = require('domify');
@@ -529,6 +528,99 @@ describe('text-model', function () {
       result = fn(before, after);
 
       expect(documentToString(lib.toElement(result))).to.deep.equal(expectedResult);
+    });
+  });
+
+  describe('updateSameAs', function () {
+    var fn = lib[this.title];
+
+    it('uses default mappings for tag conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h3>e</h3><h4>f</h4><h5>g</h5><h6>h</h6><strike>i</strike>'),
+        result = {
+          text: 'abcdefghi',
+          blocks: {
+            strong: [0, 1],
+            emphasis: [1, 3],
+            h2: [3, 8],
+            del: [8, 9]
+          }
+        };
+
+      expect(lib.fromElement(el)).to.deep.equal(result);
+    });
+
+    it('merges in user conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h2>e</h2><h3>f</h3><h4>g</h4><h5>h</h5><h6>i</h6><strike>j</strike>'),
+        result = {
+          text: 'abcdefghij',
+          blocks: {
+            strong: [0, 1, 3, 9],
+            emphasis: [1, 3],
+            del: [9, 10]
+          }
+        };
+
+      lib.resetSameAs();
+      fn({
+        H1: 'STRONG',
+        H2: 'STRONG',
+        H3: 'STRONG',
+        H4: 'STRONG',
+        H5: 'STRONG',
+        H6: 'STRONG',
+      });
+
+      expect(lib.fromElement(el)).to.deep.equal(result);
+    });
+
+    it('allows removing default conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h3>e</h3><h4>f</h4><h5>g</h5><h6>h</h6><strike>i</strike>'),
+        result = {
+          text: 'abcdefghi',
+          blocks: {
+            bold: [0, 1],
+            underline: [1, 2],
+            italic: [2, 3],
+            h2: [3, 8],
+            del: [8, 9]
+          }
+        };
+
+      lib.resetSameAs();
+      fn({
+        B: null,
+        U: null,
+        I: null
+      });
+
+      expect(lib.fromElement(el)).to.deep.equal(result);
+    });
+  });
+
+  describe('resetSameAs', function () {
+    var fn = lib[this.title];
+
+    it('resets the default conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h3>e</h3><h4>f</h4><h5>g</h5><h6>h</h6><strike>i</strike>'),
+        result = {
+          text: 'abcdefghi',
+          blocks: {
+            strong: [0, 1],
+            emphasis: [1, 3],
+            h2: [3, 8],
+            del: [8, 9]
+          }
+        };
+
+      // set conversions to some weird state
+      lib.updateSameAs({
+        B: null,
+        U: null,
+        I: null
+      });
+      fn(); // reset them
+
+      expect(lib.fromElement(el)).to.deep.equal(result); // default conversions
     });
   });
 });
