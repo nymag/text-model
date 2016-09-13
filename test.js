@@ -561,7 +561,7 @@ describe('text-model', function () {
           }
         };
 
-      fn(); // set defaults
+      lib.resetSameAs();
       fn({
         H1: 'STRONG',
         H2: 'STRONG',
@@ -587,7 +587,7 @@ describe('text-model', function () {
           }
         };
 
-      fn(); // set defaults
+      lib.resetSameAs();
       fn({
         B: null,
         U: null,

@@ -1,5 +1,5 @@
 'use strict';
-var tagTypes, blockTypes, sameAs,
+var tagTypes, blockTypes, defaultSameAs, sameAs,
   _ = require('lodash'),
   domify = require('domify'),
   nodeFilter = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
@@ -217,11 +217,21 @@ blockTypes = _.transform(tagTypes, function (obj, tag, name) {
  *
  * Expect this list to change often, so don't write code that relies on specific values.
  *
- * These are set in setSameAs()
- *
  * @enum
  */
-sameAs = {};
+defaultSameAs = {
+  B: 'STRONG',
+  U: 'EM',
+  I: 'EM',
+  H1: 'H2',
+  H3: 'H2',
+  H4: 'H2',
+  H5: 'H2',
+  H6: 'H2',
+  STRIKE: 'DEL'
+};
+
+sameAs = _.clone(defaultSameAs); // this will be changed by setSameAs
 
 /**
  * @param {Node} el
@@ -795,26 +805,13 @@ module.exports.concat = concat;
 /**
  * merge custom conversion table
  * note: to remove a default conversion, simply pass <TAGNAME>: null
- * note: calling this with no obj sets the default conversions
- * @param {object} [obj] tagname mappings
+ * @param {object} obj tagname mappings
  */
 module.exports.setSameAs = function (obj) {
-  if (obj) {
-    sameAs = _.assign(sameAs, obj);
-  } else {
-    sameAs = {
-      B: 'STRONG',
-      U: 'EM',
-      I: 'EM',
-      H1: 'H2',
-      H3: 'H2',
-      H4: 'H2',
-      H5: 'H2',
-      H6: 'H2',
-      STRIKE: 'DEL'
-    };
-  }
+  sameAs = _.assign(sameAs, obj);
 };
 
-// when this library is first loaded, set the default conversions
-module.exports.setSameAs();
+// reset the defaults, used for testing setSameAs
+module.exports.resetSameAs = function () {
+  sameAs = _.clone(defaultSameAs);
+};
