@@ -1,8 +1,13 @@
 {
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 6
+  },
   "env": {
     "browser": true,
-    "node": true,
-    "mocha": true
+    "commonjs": true,
+    "mocha": true,
+    "es6": true,
   },
   // add global vars for chai, etc
   "globals": {
@@ -21,7 +26,8 @@
     "octalLiterals": true,
     "binaryLiterals": true,
     "templateStrings": true,
-    "generators": true
+    "generators": true,
+    "modules": true
   },
   "rules": {
     // possible errors
@@ -44,7 +50,7 @@
     "vars-on-top": 2,
     "wrap-iife": 2,
     // strict mode
-    "strict": [2, "global"],
+    "strict": [2, "never"],
     // variables
     "no-unused-vars": 2,
     // node.js
