@@ -561,6 +561,7 @@ describe('text-model', function () {
           }
         };
 
+      fn(); // set defaults
       fn({
         H1: 'STRONG',
         H2: 'STRONG',
@@ -568,6 +569,29 @@ describe('text-model', function () {
         H4: 'STRONG',
         H5: 'STRONG',
         H6: 'STRONG',
+      });
+
+      expect(lib.fromElement(el)).to.deep.equal(result);
+    });
+
+    it('allows removing default conversions', function () {
+      var el = domify('<b>a</b><u>b</u><i>c</i><h1>d</h1><h3>e</h3><h4>f</h4><h5>g</h5><h6>h</h6><strike>i</strike>'),
+        result = {
+          text: 'abcdefghi',
+          blocks: {
+            bold: [0, 1],
+            underline: [1, 2],
+            italic: [2, 3],
+            h2: [3, 8],
+            del: [8, 9]
+          }
+        };
+
+      fn(); // set defaults
+      fn({
+        B: null,
+        U: null,
+        I: null
       });
 
       expect(lib.fromElement(el)).to.deep.equal(result);

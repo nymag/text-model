@@ -217,19 +217,11 @@ blockTypes = _.transform(tagTypes, function (obj, tag, name) {
  *
  * Expect this list to change often, so don't write code that relies on specific values.
  *
+ * These are set in clearSameAs()
+ *
  * @enum
  */
-sameAs = {
-  B: 'STRONG',
-  U: 'EM',
-  I: 'EM',
-  H1: 'H2',
-  H3: 'H2',
-  H4: 'H2',
-  H5: 'H2',
-  H6: 'H2',
-  STRIKE: 'DEL'
-};
+sameAs = {};
 
 /**
  * @param {Node} el
@@ -803,8 +795,26 @@ module.exports.concat = concat;
 /**
  * merge custom conversion table
  * note: to remove a default conversion, simply pass <TAGNAME>: null
- * @param {object} obj tagname mappings
+ * note: calling this with no obj sets the default conversions
+ * @param {object} [obj] tagname mappings
  */
 module.exports.setSameAs = function (obj) {
-  sameAs = _.assign(sameAs, obj);
+  if (obj) {
+    sameAs = _.assign(sameAs, obj);
+  } else {
+    sameAs = {
+      B: 'STRONG',
+      U: 'EM',
+      I: 'EM',
+      H1: 'H2',
+      H3: 'H2',
+      H4: 'H2',
+      H5: 'H2',
+      H6: 'H2',
+      STRIKE: 'DEL'
+    };
+  }
 };
+
+// when this library is first loaded, set the default conversions
+module.exports.setSameAs();
