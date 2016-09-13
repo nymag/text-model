@@ -807,7 +807,7 @@ module.exports.concat = concat;
  * note: to remove a default conversion, simply pass <TAGNAME>: null
  * @param {object} obj tagname mappings
  */
-module.exports.setSameAs = function (obj) {
+module.exports.updateSameAs = function (obj) {
   sameAs = _.assign(sameAs, obj);
 };
 

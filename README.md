@@ -61,7 +61,7 @@ paragraphEl.appendChild(textModel.toElement(splitModels[1]));
 ## Optional Configuration
 
 ```js
-textModel.setSameAs({
+textModel.updateSameAs({
   'B': 'STRONG',
   'U': 'EM',
   'I': 'EM',
@@ -77,7 +77,7 @@ textModel.setSameAs({
 These tags will be converted if they are seen. The defaults are as above, but you can pass in an object of tag names (uppercase) that will merge and overwrite them. To _remove_ a default conversion, simply pass `<tagname>: null` in the object:
 
 ```js
-textModel.setSameAs({
+textModel.updateSameAs({
   'B': null, // override default, don't convert <b> to <strong>
   'H1': 'STRONG', // convert ALL headers to <strong>
   'H2': 'STRONG',

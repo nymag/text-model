@@ -532,7 +532,7 @@ describe('text-model', function () {
     });
   });
 
-  describe('setSameAs', function () {
+  describe('updateSameAs', function () {
     var fn = lib[this.title];
 
     it('uses default mappings for tag conversions', function () {
