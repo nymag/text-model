@@ -217,7 +217,7 @@ blockTypes = _.transform(tagTypes, function (obj, tag, name) {
  *
  * Expect this list to change often, so don't write code that relies on specific values.
  *
- * These are set in clearSameAs()
+ * These are set in setSameAs()
  *
  * @enum
  */
