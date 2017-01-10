@@ -180,6 +180,8 @@ tagTypes = {
   EM: { set: continuous, name: 'emphasis' },
   STRONG: { set: continuous, name: 'strong' },
   PRE: { set: continuous, name: 'pre'},
+  SUP: { set: continuous, name: 'sup'},
+  SUB: { set: continuous, name: 'sub'},
   DEL: { set: continuous, name: 'del' },
   H1: { set: continuous, name: 'h1' },
   H2: { set: continuous, name: 'h2' },
